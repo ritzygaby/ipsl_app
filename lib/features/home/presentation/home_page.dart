@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../elearning/presentation/elearning_page.dart';
+import '../../student/data/mock_database.dart';
+import '../../schedule/presentation/schedule_page.dart';
+import '../../grades/presentation/grades_page.dart';
+import '../../../../main_scaffold.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -49,7 +54,7 @@ class HomePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Bienvenue sur IPSL',
+                            'Master 1 - Psychocriminologie',
                             style: textTheme.bodyLarge?.copyWith(
                               color: Colors.white.withOpacity(0.9),
                             ),
@@ -70,26 +75,18 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  // Search Bar Placeholder
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search, color: Colors.white),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Rechercher une formation...',
-                          style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 32),
+                  // Dashboard Stats
+                  // Statistiques (Mock Data from DB)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildHeaderStat('Moyenne', '${MockDatabase.calculateAverage()}/20', Icons.analytics_outlined),
+                      _buildHeaderStat('Crédits', '${MockDatabase.calculateCredits()}', Icons.school_outlined), // Mock logic
+                      _buildHeaderStat('Absences', '2h', Icons.timer_off_outlined), // Static for now as attendances not fully mocked in DB logic yet
+                    ],
                   ),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -100,96 +97,62 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Quick Actions Grid
-                  Text('Accès Rapide', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.5,
-                    children: [
-                      _buildQuickActionCard(
-                        icon: Icons.school_rounded,
-                        label: 'Mes Cours',
-                        color: AppColors.primary,
-                        onTap: () {},
-                      ),
-                      _buildQuickActionCard(
-                        icon: Icons.calendar_month_rounded,
-                        label: 'Planning',
-                        color: AppColors.orange,
-                        onTap: () {},
-                      ),
-                      _buildQuickActionCard(
-                        icon: Icons.cloud_download_rounded,
-                        label: 'Ressources',
-                        color: AppColors.secondary,
-                        onTap: () {},
-                      ),
-                      _buildQuickActionCard(
-                        icon: Icons.grade_rounded,
-                        label: 'Résultats',
-                        color: AppColors.accent,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                  _buildQuickActions(context),
 
                   const SizedBox(height: 32),
                   
-                  // Featured Section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('À la une', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Voir tout'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
+                  // Next Class / News
+                  Text('Prochain Cours', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
                   Container(
-                    height: 180,
-                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: AppColors.primary,
-                      image: const DecorationImage(
-                        image: NetworkImage('https://placeholder.com/image.jpg'), // Placeholder or Asset
-                        fit: BoxFit.cover,
-                        opacity: 0.2,
-                      ),
-                      gradient: LinearGradient(
-                        colors: [AppColors.primary, AppColors.secondary],
-                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                      boxShadow: [
+                         BoxShadow(
+                          color: Colors.black.withOpacity(0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Stack(
+                    child: Row(
                       children: [
-                        Positioned(
-                          bottom: 20,
-                          left: 20,
-                          right: 20,
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Column(
+                            children: [
+                              Text('MER', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                              Text('10', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: AppColors.orange,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Text(
-                                  'NOUVEAU',
-                                  style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
                               const Text(
-                                'Conférence sur la Neuropsychologie',
-                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                'Psychopathologie de la violence',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(Icons.access_time, size: 14, color: Colors.grey),
+                                  const SizedBox(width: 4),
+                                  const Text('17:30 - 19:30', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                                  const SizedBox(width: 12),
+                                  const Icon(Icons.location_on_outlined, size: 14, color: Colors.grey),
+                                  const SizedBox(width: 4),
+                                  const Text('Salle A2', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                                ],
                               ),
                             ],
                           ),
@@ -203,6 +166,93 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeaderStat(String label, String value, IconData icon) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white.withOpacity(0.8), size: 20),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.7),
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Accès Rapide',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 1.5,
+          children: [
+            _buildQuickActionCard(
+              icon: Icons.calendar_today_rounded,
+              label: 'Emploi du temps',
+              color: AppColors.orange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SchedulePage()),
+                );
+              },
+            ),
+            _buildQuickActionCard(
+              icon: Icons.grade_rounded,
+              label: 'Notes',
+              color: Colors.blueAccent,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GradesPage()),
+                );
+              },
+            ),
+            _buildQuickActionCard(
+              icon: Icons.play_lesson_rounded,
+              label: 'E-Learning',
+              color: AppColors.secondary,
+              onTap: () {
+                 // Navigation to tab is handled by main scaffold, but here we are inside a page.
+                 // Ideally we use a callback or global key, but for now let's just push the page separately or show documents
+              },
+            ),
+            _buildQuickActionCard(
+              icon: Icons.folder,
+              label: 'Documents',
+              color: Colors.teal,
+              onTap: () {},
+            ),
+          ],
+        ),
+      ],
     );
   }
 

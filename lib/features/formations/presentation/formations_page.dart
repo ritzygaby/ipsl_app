@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/services/course_service.dart';
 import '../data/formation_data.dart';
-import 'formation_details_page.dart';
+import '../../my_courses/presentation/course_list_page.dart';
 
 class FormationsPage extends StatelessWidget {
   const FormationsPage({super.key});
@@ -10,43 +11,30 @@ class FormationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Formations IPSL'),
+        title: const Text('Mes Cours'),
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          // Info Banner
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            color: AppColors.accent.withOpacity(0.1),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, color: AppColors.accent, size: 20),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Inscriptions ouvertes jusqu\'au 31 décembre 2025',
-                    style: TextStyle(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: formationsData.length,
-              itemBuilder: (context, index) {
-                return _buildFormationCard(context, formationsData[index]);
-              },
-            ),
-          ),
-        ],
+      body: AnimatedBuilder(
+        animation: CourseService(),
+        builder: (context, child) {
+          // Simulate fetching student's enrolled courses from the dynamic service
+          final myCourses = CourseService().courses
+              .where((f) => f.title.contains('Psychocriminologie'))
+              .toList();
+
+          if (myCourses.isEmpty) {
+            return const Center(child: Text('Aucun cours inscrit.'));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: myCourses.length,
+            itemBuilder: (context, index) {
+              return _buildFormationCard(context, myCourses[index]);
+            },
+          );
+        },
       ),
     );
   }
@@ -73,14 +61,15 @@ class FormationsPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FormationDetailsPage(formation: formation),
+                // Navigate to the list of courses (subjects) for this program
+                builder: (context) => CourseListPage(formation: formation),
               ),
             );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Banner
+              // Banner specific to student view
               Container(
                 height: 100,
                 decoration: BoxDecoration(
@@ -95,11 +84,43 @@ class FormationsPage extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.school_rounded,
-                    size: 40,
-                    color: Colors.white.withOpacity(0.9),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.school_rounded,
+                        size: 40,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'MON PROGRAMME',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.7),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              formation.type.label,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -108,35 +129,6 @@ class FormationsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.orange.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            'MASTER PROFESSIONNEL',
-                            style: TextStyle(
-                              color: AppColors.orange,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text('120 ECTS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
                     Text(
                       formation.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -146,26 +138,65 @@ class FormationsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      formation.description,
+                      formation.subtitle,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w500,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 16),
+                    // Progress Indicator (Mock)
                     Row(
                       children: [
-                        const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        const Text('2 Ans', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                        const SizedBox(width: 16),
-                        const Icon(Icons.payments_outlined, size: 14, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        const Text('600k FCFA/an', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Progression annuelle',
+                                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                                  ),
+                                  Text(
+                                    '35%',
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              LinearProgressIndicator(
+                                value: 0.35,
+                                backgroundColor: Colors.grey.shade200,
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    // Modules quick glance
+                    Text(
+                      'Modules en cours :',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textSecondary),
+                    ),
+                     const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: formation.modules.take(3).map((m) => Chip(
+                        label: Text(m, style: const TextStyle(fontSize: 10)),
+                        backgroundColor: AppColors.background,
+                        side: BorderSide.none,
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      )).toList(),
+                    ),
                   ],
                 ),
               ),

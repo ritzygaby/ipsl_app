@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'features/home/presentation/home_page.dart';
 import 'features/formations/presentation/formations_page.dart';
-import 'features/events/presentation/events_page.dart';
+import 'features/formations/presentation/continuous_education_page.dart';
 import 'features/profile/presentation/profile_page.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -16,8 +16,8 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const FormationsPage(),
-    const EventsPage(),
+    const FormationsPage(), // Will repurpose as 'Mes Cours'
+    const ContinuousEducationPage(),
     const ProfilePage(),
   ];
 
@@ -35,21 +35,22 @@ class _MainScaffoldState extends State<MainScaffold> {
             _currentIndex = index;
           });
         },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Accueil',
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Tableau de bord',
           ),
           NavigationDestination(
-            icon: Icon(Icons.school_outlined),
-            selectedIcon: Icon(Icons.school),
-            label: 'Formations',
+            icon: Icon(Icons.class_outlined),
+            selectedIcon: Icon(Icons.class_),
+            label: 'Mes Cours',
           ),
           NavigationDestination(
-            icon: Icon(Icons.event_outlined),
-            selectedIcon: Icon(Icons.event),
-            label: 'Événements',
+            icon: Icon(Icons.workspace_premium_outlined),
+            selectedIcon: Icon(Icons.workspace_premium),
+            label: 'Form. Continue',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outlined),

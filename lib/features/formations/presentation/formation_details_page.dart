@@ -103,13 +103,100 @@ class FormationDetailsPage extends StatelessWidget {
                     ),
                   ),
 
+                  const SizedBox(height: 32),
+                  _buildSectionTitle(context, 'Dossier de Candidature'),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.secondary.withOpacity(0.2)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.secondary.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        _buildBulletPoint('Une fiche de candidature'),
+                        _buildBulletPoint('Une photocopie certifiée conforme de l\'acte de naissance'),
+                        _buildBulletPoint('Copie de la pièce d\'identité'),
+                        _buildBulletPoint('Les photocopies certifiées conformes des diplômes'),
+                        _buildBulletPoint('Quatre photos d\'identité 4*4'),
+                        _buildBulletPoint('Un certificat médical délivré par un médecin généraliste'),
+                        _buildBulletPoint('Un curriculum vitae détaillé'),
+                        _buildBulletPoint('Un certificat de travail (pour les travailleurs)'),
+                        _buildBulletPoint('Une lettre de motivation'),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+                  _buildSectionTitle(context, 'Procédure de candidature'),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Envoyer le dossier complet par email à :',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.email_outlined, size: 16, color: AppColors.primary),
+                            const SizedBox(width: 8),
+                            SelectableText(
+                              'ipsl.yaounde@gmail.com',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Ou déposer directement à la réception de IPSL :',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.location_on_outlined, size: 16, color: AppColors.primary),
+                            const SizedBox(width: 8),
+                            const Expanded(
+                              child: Text(
+                                'Campus de Mfandena (face immeuble beau séjour)',
+                                style: TextStyle(color: AppColors.textSecondary),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  
                   const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
                          ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Candidature à venir...')),
+                          const SnackBar(content: Text('Veuillez suivre la procédure de candidature ci-dessus.')),
                         );
                       },
                       child: const Text('POSTULER MAINTENANT'),
