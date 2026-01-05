@@ -190,7 +190,7 @@ class FormationsPage extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: formation.modules.take(3).map((m) => Chip(
-                        label: Text(m, style: const TextStyle(fontSize: 10)),
+                        label: Text(m.title, style: const TextStyle(fontSize: 10)),
                         backgroundColor: AppColors.background,
                         side: BorderSide.none,
                         padding: EdgeInsets.zero,

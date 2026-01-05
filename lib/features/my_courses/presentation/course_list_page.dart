@@ -4,6 +4,7 @@ import '../../../../core/widgets/course_video_player.dart';
 import '../../formations/data/formation_data.dart';
 import 'course_content_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../teacher/presentation/teacher_public_profile_page.dart';
 
 class CourseListPage extends StatelessWidget {
   final Formation formation;
@@ -28,6 +29,21 @@ class CourseListPage extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_pin_circle_outlined, color: AppColors.primary),
+            tooltip: 'Profil de l\'enseignant',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TeacherPublicProfilePage(teacherName: 'Dr. Karem'),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: CustomScrollView(
         slivers: [
@@ -89,10 +105,10 @@ class CourseListPage extends StatelessWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final moduleName = formation.modules[index];
+                final module = formation.modules[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: _buildCourseCard(context, moduleName, index),
+                  child: _buildCourseCard(context, module, index),
                 );
               },
               childCount: formation.modules.length,
@@ -182,7 +198,7 @@ class CourseListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCourseCard(BuildContext context, String moduleName, int index) {
+  Widget _buildCourseCard(BuildContext context, Module module, int index) {
     // Generate some mock progress based on index
     final double progress = (index % 3) * 0.3 + 0.1; 
     final int completedLessons = (progress * 10).round();
@@ -208,7 +224,10 @@ class CourseListPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CourseContentPage(courseTitle: moduleName),
+                builder: (context) => CourseContentPage(
+                  courseTitle: module.title,
+                  moduleResources: module.resources,
+                ),
               ),
             );
           },
@@ -226,7 +245,7 @@ class CourseListPage extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      moduleName.isNotEmpty ? moduleName[0].toUpperCase() : 'C',
+                      module.title.isNotEmpty ? module.title[0].toUpperCase() : 'C',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -242,7 +261,7 @@ class CourseListPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        moduleName,
+                        module.title,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,

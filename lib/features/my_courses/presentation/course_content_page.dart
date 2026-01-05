@@ -1,16 +1,33 @@
 
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../formations/data/formation_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CourseContentPage extends StatelessWidget {
   final String courseTitle;
+  final List<CourseResource> moduleResources;
 
-  const CourseContentPage({super.key, required this.courseTitle});
+  const CourseContentPage({
+    super.key, 
+    required this.courseTitle,
+    this.moduleResources = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Convert actual resources to lesson format for display
+    final List<Map<String, dynamic>> realResources = moduleResources.map((r) => {
+      'title': r.title,
+      'duration': r.type == ResourceType.video ? 'Vidéo' : 'PDF',
+      'type': r.type == ResourceType.video ? 'video' : 'pdf',
+      'isCompleted': false,
+      'url': r.url,
+      'isReal': true,
+    }).toList();
+
     // Mock Lessons Data
-    final List<Map<String, dynamic>> lessons = [
+    final List<Map<String, dynamic>> mockLessons = [
       {'title': 'Introduction au cours', 'duration': '15 min', 'type': 'video', 'isCompleted': true},
       {'title': 'Chapitre 1 : Les fondamentaux', 'duration': '45 min', 'type': 'video', 'isCompleted': true},
       {'title': 'Support de cours - Chapitre 1', 'duration': 'PDF', 'type': 'pdf', 'isCompleted': true},
@@ -20,6 +37,8 @@ class CourseContentPage extends StatelessWidget {
       {'title': 'Travaux Dirigés', 'duration': '1h 30', 'type': 'assignment', 'isCompleted': false},
       {'title': 'Examen Blanc', 'duration': '2h', 'type': 'exam', 'isCompleted': false},
     ];
+
+    final lessons = [...realResources, ...mockLessons];
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -121,10 +140,21 @@ class CourseContentPage extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: showLocked ? null : () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Ouverture de : ${lesson['title']}')),
-              );
+            onTap: showLocked ? null : () async {
+              if (lesson['isReal'] == true && lesson['url'] != null) {
+                 final uri = Uri.parse(lesson['url']);
+                 if (await canLaunchUrl(uri)) {
+                   await launchUrl(uri);
+                 } else {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Impossible d\'ouvrir le lien')),
+                   );
+                 }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Ouverture de : ${lesson['title']}')),
+                );
+              }
             },
             child: Padding(
               padding: const EdgeInsets.all(16),

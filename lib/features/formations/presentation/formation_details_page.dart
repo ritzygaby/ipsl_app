@@ -81,7 +81,7 @@ class FormationDetailsPage extends StatelessWidget {
                   const SizedBox(height: 32),
                   _buildSectionTitle(context, 'Modules Clés'),
                   const SizedBox(height: 8),
-                  ...formation.modules.map((m) => _buildBulletPoint(m)),
+                  ...formation.modules.map((m) => _buildBulletPoint(m.title)),
 
                   const SizedBox(height: 32),
                   _buildSectionTitle(context, 'Débouchés'),
