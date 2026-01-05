@@ -1,6 +1,6 @@
 {
-    "name": "ipsl_app",
-    "short_name": "ipsl_app",
+    "name": "IPSL",
+    "short_name": "IPSL",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
